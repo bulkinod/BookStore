@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookstore</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        form {
+            margin: 20px 0;
+        }
+        input, button {
+            padding: 10px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Bookstore</h1>
+    <h2>Available Books</h2>
+    <table id="books-table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Books will be dynamically inserted here -->
+        </tbody>
+    </table>
+
+    <h2>Add a New Book</h2>
+    <form id="add-book-form">
+        <input type="text" id="title" placeholder="Title" required>
+        <input type="text" id="author" placeholder="Author" required>
+        <input type="number" id="price" placeholder="Price" required step="0.01">
+        <button type="submit">Add Book</button>
+    </form>
+</div>
+
+<script>
+    const apiUrl = 'http://localhost:8080/api/books';
+
+    // Function to fetch and display books
+    function fetchBooks() {
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(books => {
+                const booksTable = document.getElementById('books-table').getElementsByTagName('tbody')[0];
+                booksTable.innerHTML = ''; // Clear the table
+
+                books.forEach(book => {
+                    const row = booksTable.insertRow();
+                    row.innerHTML = `
+                            <td>${book.title}</td>
+                            <td>${book.author}</td>
+                            <td>${book.price}</td>
+                            <td><button onclick="deleteBook(${book.id})">Delete</button></td>
+                        `;
+                });
+            })
+            .catch(error => console.error('Error fetching books:', error));
+    }
+
+    // Function to add a new book
+    document.getElementById('add-book-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const title = document.getElementById('title').value;
+        const author = document.getElementById('author').value;
+        const price = document.getElementById('price').value;
+
+        const newBook = { title, author, price };
+
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newBook),
+        })
+            .then(response => response.json())
+            .then(data => {
+                fetchBooks(); // Refresh the list of books
+                document.getElementById('add-book-form').reset(); // Clear the form
+            })
+            .catch(error => console.error('Error adding book:', error));
+    });
+
+    // Function to delete a book
+    function deleteBook(id) {
+        fetch(`${apiUrl}/${id}`, {
+            method: 'DELETE',
+        })
+            .then(() => fetchBooks()) // Refresh the list after deletion
+            .catch(error => console.error('Error deleting book:', error));
+    }
+
+    // Fetch and display books when the page loads
+    fetchBooks();
+</script>
+</body>
+</html>
