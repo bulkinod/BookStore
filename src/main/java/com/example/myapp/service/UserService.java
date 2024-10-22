@@ -25,8 +25,12 @@ public class UserService implements UserDetailsService {
 
     public void registerUser(User registrationDto) {
         User user = new User();
+        if(userRepository.existsByEmail(registrationDto.getEmail())){
+            throw new IllegalArgumentException("Email уже используется");
+        }
         user.setUsername(registrationDto.getUsername());
-        user.setPassword(passwordEncoder.encode(registrationDto.getPassword())); // Шифрование пароля
+        user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
+        user.setEmail(registrationDto.getEmail());
         userRepository.save(user);
     }
 

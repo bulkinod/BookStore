@@ -28,7 +28,7 @@ public class CartController {
         return ResponseEntity.ok("book was added to cart");
     }
 
-    @PostMapping("/remove")
+    @DeleteMapping("/remove")
     public ResponseEntity<String> removeFromCart(@RequestParam("username") String username, @RequestParam("bookId") Long bookId){
         cartService.removeBookFromCart(username, bookId);
         return ResponseEntity.ok("book was removed from cart");

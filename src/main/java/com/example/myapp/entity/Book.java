@@ -22,11 +22,6 @@ public class Book {
 
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY, mappedBy = "book")
-    private List<Image> images = new ArrayList<>();
-
-    private long previewImageId;
-
     private LocalDateTime creationDate;
 
     @PrePersist
@@ -34,8 +29,5 @@ public class Book {
         creationDate = LocalDateTime.now();
     }
 
-    public void addImageToBook(Image image) {
-        image.setBook(this);
-        images.add(image);
-    }
+
 }

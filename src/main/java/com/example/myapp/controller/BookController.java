@@ -43,9 +43,8 @@ public class BookController {
     }
 
     @PostMapping
-    public Book addBook(@RequestPart Book book, @RequestParam("file1") MultipartFile file1,
-                        @RequestParam("file2") MultipartFile file2, @RequestParam("file3")MultipartFile file3 ) throws IOException {
-        return bookService.addBook(book, file1, file2, file3);
+    public Book addBook(@RequestBody Book book) throws IOException {
+        return bookService.addBook(book);
     }
 
     @DeleteMapping("/delete/{id}")

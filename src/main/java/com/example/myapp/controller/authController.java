@@ -17,9 +17,4 @@ public class authController {
         userService.registerUser(registrationDto);
         return ResponseEntity.ok("User registered successfully");
     }
-
-    @GetMapping("/login")
-    public ResponseEntity<String> loginPage() {
-        return ResponseEntity.ok("Please login");
-    }
 }
